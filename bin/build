@@ -1,0 +1,28 @@
+#!/bin/bash
+##
+## Package and deploy the bundle
+##
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${BINDIR}")" && pwd -P)"
+test -f "${BINDIR}/.settings" && source "${BINDIR}/.settings"
+
+"${BINDIR}/venvtool" setup dev build
+set -e
+source "${BINDIR}/venvtool"
+
+ENTRY="src/main.py"
+BINNAME="${NAME}"
+
+DEF_BINNAME="$(basename "${ENTRY}")"
+DEF_BINNAME="${DEF_BINNAME%%.py}"
+
+cd "${BASEDIR}"
+
+key="$(dd if=/dev/urandom bs=64 count=1 2>/dev/null | base64 | head -1 )"
+
+## Clean
+rm -rf dist build "${DEF_BINNAME}.spec"
+
+pyinstaller --key "${key}" -s -p gen -p src --onefile "${ENTRY}"
+
+mv "dist/${DEF_BINNAME}" "dist/${BINNAME}"

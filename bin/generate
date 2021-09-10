@@ -1,0 +1,49 @@
+#!/bin/bash
+##
+## Generate values
+## 
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${BINDIR}")" && pwd -P)"
+
+cd "${BASEDIR}"
+
+test -f "${BINDIR}/.settings" && source "${BINDIR}/.settings"
+
+GENERATED="src/${PACKAGE}/generated.py"
+
+function restore_generated(){
+    if test -f "${GENERATED}.orig"
+    then
+        echo "Restoring generated template..."
+        mv "${GENERATED}.orig" "${GENERATED}"
+    fi
+}
+
+function backup_original(){
+    if ! test -f "${GENERATED}.orig"
+    then
+        echo "Backing up original generated template..."
+        cp "${GENERATED}" "${GENERATED}.orig"
+    fi
+}
+
+function set_value(){
+    KEY="${1:-UNKOWN}"
+    VALUE="${2}"
+    sed -i.bak "s#^\(${KEY}[ ]*=[ ]*\).*\$#\\1\"${2}\"#" "${GENERATED}"
+    test -f "${GENERATED}.bak" && rm "${GENERATED}.bak"
+}
+
+
+restore_generated
+
+VERSION="${1}"
+if test "z${VERSION}" != "z"
+then
+    backup_original
+    echo Updating Generated Values for ${VERSION}...
+    set_value VERSION "${VERSION}"
+    set_value BUILD_DATE "$(date +%Y-%m-%d)"
+    set_value BUILD_TIME "$(date +%H:%M:%S)"
+    set_value TS "$(date +%s)"
+fi

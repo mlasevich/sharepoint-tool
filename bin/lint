@@ -1,0 +1,15 @@
+#!/bin/bash
+##
+## Run Linter
+## 
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${BINDIR}")" && pwd -P)"
+test -f "${BINDIR}/.settings" && source "${BINDIR}/.settings"
+
+"${BINDIR}/venvtool" setup dev
+set -e
+source "${BINDIR}/venvtool"
+cd "${BASEDIR}/src"
+LINTRC="../pylintrc"
+test -f "${LINTRC}" || pylint  --generate-rcfile > "${LINTRC}"
+pylint --rcfile "${LINTRC}" $(find . -name '*.py')

@@ -1,0 +1,8 @@
+## Shared settings
+
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${BINDIR}")" && pwd -P)"
+
+NAME='sp_tool'
+
+PACKAGE="${NAME}"

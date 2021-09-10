@@ -1,0 +1,7 @@
+# Unit test reqirements
+mock
+pylint
+pytest-cov
+six >=1.12.0
+xmlrunner
+watchmedo

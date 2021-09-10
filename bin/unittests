@@ -1,0 +1,18 @@
+#!/bin/bash
+##
+## Run Unit Tests and generate coverage reports
+## 
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${BINDIR}")" && pwd -P)"
+test -f "${BINDIR}/.settings" && source "${BINDIR}/.settings"
+
+set -e
+"${BINDIR}/venvtool" setup dev
+source "${BINDIR}/venvtool"
+
+cd "${BASEDIR}"
+
+coverage run --source src -m xmlrunner discover src -p '*_test.py' -o 'reports/xunit'
+coverage report -m
+coverage xml -o reports/coverage.xml
+coverage html -d reports/coverage
