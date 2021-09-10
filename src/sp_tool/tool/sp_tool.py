@@ -4,7 +4,7 @@ sp-tool implementation
 import os.path
 import traceback
 from argparse import Namespace
-from functools import cached_property
+from functools import lru_cache
 
 import yaml
 
@@ -40,7 +40,8 @@ class SharepointTool:
         if self.opts.tenant is None:
             raise Exception('Must specify tenant')
 
-    @cached_property
+    @property
+    @lru_cache()
     def files(self):
         """ List of files to publish """
         return list_files(self.source_dir, self.opts.recurse,
@@ -74,13 +75,15 @@ class SharepointTool:
         """ Check if we have files"""
         return bool(self.files)
 
-    @cached_property
+    @property
+    @lru_cache()
     def source_dir(self):
         """ Normalized source directory"""
         source_dir = self.opts.source_dir
         return source_dir
 
-    @cached_property
+    @property
+    @lru_cache()
     def sharepoint(self):
         """ Get sharepoint connection"""
         sharepoint = SharepointConnector(

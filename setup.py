@@ -36,6 +36,7 @@ for item in ['include', 'exclude']:
         FIND_PKGS[item] = FIND_PKGS[item].split(',')
 
 PKG_INFO.update({
+    'python_requires': '>=3.6',
     'packages': find_packages(**(FIND_PKGS)),
     'package_dir': {'': 'src'},
     'package_data': {'': ['/package.cfg*']},
