@@ -1,7 +1,7 @@
 # Sharepoint API Client
 
 [![Build Status](https://app.travis-ci.com/mlasevich/sharepoint-tool.svg?branch=main)](https://app.travis-ci.com/mlasevich/sharepoint-tool)
-[![Coverage Status](https://coveralls.io/repos/github/mlasevich/sharepoint-tool/badge.svg?branch=master)](https://coveralls.io/github/mlasevich/sharepoint-tool?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/mlasevich/sharepoint-tool/badge.svg?branch=main)](https://coveralls.io/github/mlasevich/sharepoint-tool?branch=main)
 [![PyPI version](https://badge.fury.io/py/sharepoint-toolQ.svg)](https://badge.fury.io/py/sharepoint-tool)
 
 
