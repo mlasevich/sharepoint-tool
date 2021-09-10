@@ -28,7 +28,7 @@ class SharepointAuth:
         self.client_secret = client_secret
 
     @property
-    @functools.cache
+    @functools.lru_cache(maxsize=None)
     def _remote_data(self):
         """ Get login data"""
         res = requests.get(f"https://{self.host}/_vti_bin/client.svc/",
@@ -42,27 +42,27 @@ class SharepointAuth:
                 resp.get('client_id', None).strip('"'))
 
     @property
-    @functools.cache
+    @functools.lru_cache(maxsize=None)
     def bearer_realm(self):
         """ Get token Id"""
         bearer_realm, _ = self._remote_data
         return bearer_realm
 
     @property
-    @functools.cache
+    @functools.lru_cache(maxsize=None)
     def app_id(self):
         """ Get token Id"""
         _, app_id = self._remote_data
         return app_id
 
     @property
-    @functools.cache
+    @functools.lru_cache(maxsize=None)
     def resource_id(self):
         """ get resource id"""
         return f"{self.app_id}/{self.host}@{self.bearer_realm}"
 
     @property
-    @functools.cache
+    @functools.lru_cache(maxsize=None)
     def auth_url(self):
         """ Get auth url"""
         return f"https://accounts.accesscontrol.windows.net/" \
@@ -74,7 +74,7 @@ class SharepointAuth:
         return f"{self.client_id}@{self.bearer_realm}"
 
     @property
-    @functools.cache
+    @functools.lru_cache(maxsize=None)
     def bearer_token(self):
         """ Get bearer token """
         data = {"client_id": self.full_client_id,
