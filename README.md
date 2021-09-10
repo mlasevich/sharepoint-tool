@@ -1,5 +1,11 @@
 # Sharepoint API Client
 
+[![Build Status](https://app.travis-ci.com/mlasevich/sharepoint-tool.svg?branch=main)](https://app.travis-ci.com/mlasevich/sharepoint-tool)
+[![Coverage Status](https://coveralls.io/repos/github/mlasevich/sharepoint-tool/badge.svg?branch=master)](https://coveralls.io/github/mlasevich/sharepoint-tool?branch=master)
+[![PyPI version](https://badge.fury.io/py/sharepoint-toolQ.svg)](https://badge.fury.io/py/sharepoint-tool)
+
+
+
 This is a quick tool for interfacing with Sharepoint APIs without user
 credentials. It includes a library to be used as well as a basic tool
 
