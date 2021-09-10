@@ -4,4 +4,4 @@ pylint
 pytest-cov
 six >=1.12.0
 xmlrunner
-watchmedo
+watchdog
