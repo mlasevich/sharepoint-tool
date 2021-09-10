@@ -1,0 +1,214 @@
+#!/bin/bash
+#
+# venvtool - Project Virtual Environment Management Tool
+#
+# Author: Michael Lasevich
+#
+# For now only support python3
+
+
+## if sourced, perform activate in subshell and source it
+if (return 0 2>/dev/null)
+then
+    eval "$("${BASH_SOURCE[0]}" activate)"
+    return 0
+fi
+
+MYDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${MYDIR}")" && pwd -P)"
+VENVTOOL_DIR="${VENVTOOL_DIR:-${BASEDIR}}"
+
+RT_OS="$(uname -s)"
+RT_AR="$(uname -m)"
+case "${RT_AR}" in 
+    "x86_64")
+        RT_AR="64"
+        ;;
+    "x86_32")
+        RT_AR="64"
+        ;;
+esac
+
+RT_ARCH="${RT_OS:0:1}${RT_AR}"
+RT_BASE=".rt-${RT_ARCH}"
+RT="${VENVTOOL_DIR}/${RT_BASE}"
+
+test "${VENVTOOL_DIRNAME}unset" != "unset" && RT="${VENVTOOL_DIRNAME}"
+
+PYTHON="${RT}/bin/python3"
+
+
+function msg(){
+    echo "venvtool:" "${@}" >&2
+}
+
+function debug(){
+    if test "disabled${VENVTOOL_DEBUG}" != "disabled"
+    then
+        msg "DEBUG:" "${@}"
+    fi
+}
+
+function venv_exists(){
+    test -f "${RT}/bin/activate"
+}
+
+function venv_active(){
+    test "z${RT}" == "z${VIRTUAL_ENV}"
+}
+
+
+function activate_rt(){
+    if venv_exists and ! venv_active
+    then
+        source "${RT}/bin/activate"
+    fi
+}
+
+function deactivate_rt(){
+    if venv_active
+    then
+        msg Deactvating virtual env
+        deactivate
+    fi
+}
+
+###
+### Make sure RT is setup and up-to-date and produce an activation script
+### to allow activation
+function venv_activate(){
+    debug "Activate:" "${@}"
+    if ! venv_exists
+    then 
+        venv_setup "${@}" >&2
+    fi
+    if venv_exists
+    then
+        activate_rt >&2
+        if venv_active >&2
+        then
+            update_requirements >&2
+            cat <<EOF
+source "${RT}/bin/activate"
+EOF
+        else
+            cat <<EOF
+echo "ERROR: Failed to create virtual environment"
+return 1
+EOF
+            
+            
+        fi
+    else
+        msg "Failed to find an environment!!"
+        exit -1
+    fi
+}
+
+###
+### Process a requirements file
+###
+function process_requirements(){
+    local suffix="${1}"
+    local reqfile="requirements.txt"
+    
+    if test "z${suffix}" != "z"
+    then
+        reqfile="requirements-${suffix}.txt"
+    fi
+    
+    debug "ReqFile for ${suffix:-base} is '${reqfile}'"
+    
+    if test -f "${BASEDIR}/${reqfile}"
+    then
+        debug "Found ReqFile for ${suffix:-base} as '${reqfile}', processing..."
+        if ! diff "${BASEDIR}/${reqfile}" "${RT}/${reqfile}" >/dev/null 2>&1
+        then
+            msg Updating requirements for "${suffix:-base}"
+            activate_rt
+            "${PYTHON}" -m pip install -r "${BASEDIR}/${reqfile}" && cp "${BASEDIR}/${reqfile}" "${RT}/${reqfile}"
+        else
+            debug "ReqFile for \"${suffix:-base}\" has not changed"
+        fi
+    else
+        debug "Not Found ReqFile for ${suffix:-base} as '${reqfile}'"
+        rm -f "${RT}/${reqfile}"
+    fi 
+}
+
+###
+### Update Requirements
+function update_requirements(){
+    process_requirements
+    if test "none${*}" != "none"
+    then
+        for subtype in "${@}"
+        do
+            process_requirements "${subtype}"
+        done
+    fi
+}
+###
+### Setup Virtual Environment
+###
+### Params: any additional parameters will tell which requirements files to setup
+###
+function venv_setup(){
+    if ! venv_exists
+    then
+        msg "Setting Up venv for ${RT_ARCH}" "${@}"
+        python3 -m venv "${RT}"
+        activate_rt
+        msg "Updating pip and setuptools ...."
+        "${PYTHON}" -m pip install pip setuptools --upgrade
+        msg "Set Up venv for ${RT_ARCH}" "${@}"
+        deactivate_rt
+        
+    else
+        debug "venv for ${RT_ARCH} already exists..."
+    fi
+    update_requirements "${@}"
+}
+
+###
+### Delete Virtual Environment
+###
+### Param: all - delete all virtual environments
+###
+function venv_clean(){
+    deactivate_rt
+    if test "remove${1}" == "removeall"
+    then
+        msg Removing all runtime venvs... 
+        rm -rf "${BASEDIR}/.rt-"* 
+    else
+        if test -d "${RT}"
+        then
+            msg Removing runtime venv for RT "${RT_ARCH}"
+            rm -rf "${RT}"
+        fi
+    fi
+}
+
+if test "z${1}" == "z-D"
+then
+    VENVTOOL_DEBUG="enabled"
+    shift
+fi
+
+cmd="${1}"
+shift
+
+case "${cmd}" in
+  setup)
+    venv_setup "${@}"
+    ;;
+  activate)
+    venv_activate "${@}"
+    ;;
+  clean)
+    venv_clean "${@}"
+    ;;
+  *)
+    msg "Unknown Command: '${cmd}'" >&2
+esac

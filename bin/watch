@@ -1,0 +1,16 @@
+#!/bin/bash
+##
+## Run tool directly from source
+##
+## This is for development use. When installed, it will run using generated cfstacker script
+## 
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${BINDIR}")" && pwd -P)"
+test -f "${BINDIR}/.settings" && source "${BINDIR}/.settings"
+
+set -e
+"${BINDIR}/venvtool" setup dev
+source "${BINDIR}/venvtool"
+
+export PYTHONPATH="${BASEDIR}/src:${PYTHONPATH}"
+watchmedo shell-command --patterns="*.py" --ignore-directories --command="${*}"

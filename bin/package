@@ -1,0 +1,45 @@
+#!/bin/bash
+##
+## Package and deploy the bundle
+## 
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BASEDIR="$(cd "$(dirname "${BINDIR}")" && pwd -P)"
+export TWINE_REPOSITORY_URL="${1}"
+test -f "${BINDIR}/.settings" && source "${BINDIR}/.settings"
+
+VERSION="${2}"
+GEN="${BINDIR}/generate"
+
+if test "unset${VERSION}" == "unset-"
+then
+    GEN="true"
+    VERSION=""
+elif test "unset${VERSION}" == "unset"
+then
+    VERSION="$(cat "${BASEDIR}/setup.cfg" | grep ^version= | head -1 | cut -d= -f2-)"
+fi
+
+function cleanup(){
+   "${GEN}"
+}
+trap cleanup EXIT
+
+set -e
+"${BINDIR}/venvtool" setup dev
+source "${BINDIR}/venvtool"
+
+cd "${BASEDIR}"
+rm -rf dist
+
+"${GEN}" ${VERSION}
+
+python setup.py sdist bdist_wheel
+if test "${TWINE_REPOSITORY}${TWINE_REPOSITORY_URL}unset" == "unset"
+then
+  echo ""
+  echo "MUST PROVIDE EITHER REPOSITORY NAME OR URL"
+  echo ""
+  echo "Not uploading to repo"
+  exit 1
+fi
+twine upload $(ls -1t dist/source/*.tar.gz | head -1)
