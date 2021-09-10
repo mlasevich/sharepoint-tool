@@ -5,15 +5,24 @@
 [![PyPI version](https://badge.fury.io/py/sharepoint-tool.svg)](https://badge.fury.io/py/sharepoint-tool)
 
 
-
 This is a quick tool for interfacing with Sharepoint APIs without user
 credentials. It includes a library to be used as well as a basic tool
 
-***NOTE:*** this is only known to work with MS hosted instance, i.e. 
+***NOTE:*** this is only known to work with MS/Cloud hosted instance, i.e. 
 instances that have urls in form of `https://<tenant>.sharepoint.com/`.
 It may work with self-hosted sharepoint, but currently the domain is 
 hardcoded into the lib
 
+## Changelog 
+
+* 0.9.4 - Initial release (what else do you call initial release?)
+
+## Installation
+
+Quickest way to install is via PyPi
+
+    pip3 install sharepoint-tool
+    
 ## Known Issues
 
 When creating folders using `add_folder_path()` or `upload_file()`, the
