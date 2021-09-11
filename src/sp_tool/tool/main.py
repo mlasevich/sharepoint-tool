@@ -13,7 +13,7 @@ from .logging import initialize_logging, LOG
 
 __created__ = "09-08-2021"
 __updated__ = "09-08-2021"
-__version__ = '0.9.4'
+__version__ = '1.0.0'
 ENV_PREFIX = 'SP_TOOL'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 DEF = Namespace(**DEFAULT_CONFIG)

@@ -15,7 +15,9 @@ hardcoded into the lib
 
 ## Changelog 
 
-* 0.9.4 - Initial release (what else do you call initial release?)
+* 1.0.0 - Official initial release
+* 0.9.4 - **removed**
+* 0.9.3 - **removed**
 
 ## Installation
 
@@ -161,7 +163,6 @@ Every parameter above can be set via env variables as such:
       use path separator to separate (`;` on windows, `:` everywhere
       else). Example, to exclude tmp and backup files on unix, use
       `*.tmp:*.bak`
-
 
 ## Using as library
 
