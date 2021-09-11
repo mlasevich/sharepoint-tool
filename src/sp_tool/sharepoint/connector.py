@@ -141,7 +141,7 @@ class SharepointConnector:
     def get_file(self, filename, folder=DEFAULT_FOLDER):
         """ UNFINISHED get file """
         if not self.file_exists(filename, folder):
-            LOG.error("File %s} is not in folder %s", filename, folder)
+            LOG.error("File %s is not in folder %s", filename, folder)
             return False
 
         folder = urlencode(folder or "")
