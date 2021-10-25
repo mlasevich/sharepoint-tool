@@ -12,8 +12,8 @@ from sp_tool.tool.sp_tool import SharepointTool, DEFAULT_CONFIG
 from sp_tool.tool.logging import initialize_logging, LOG
 
 __created__ = "09-08-2021"
-__updated__ = "09-08-2021"
-__version__ = '1.0.0'
+__updated__ = "10-25-2021"
+__version__ = '1.0.1'
 ENV_PREFIX = 'SP_TOOL'
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 DEF = Namespace(**DEFAULT_CONFIG)

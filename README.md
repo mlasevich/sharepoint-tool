@@ -15,6 +15,7 @@ hardcoded into the lib
 
 ## Changelog 
 
+* 1.0.1 - Fix import, not code changes
 * 1.0.0 - Official initial release
 * 0.9.4 - **removed**
 * 0.9.3 - **removed**
