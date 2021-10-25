@@ -7,9 +7,9 @@ from argparse import Namespace
 import click
 
 from sp_tool.sharepoint.utils import to_yaml
-from .sp_tool import SharepointTool, DEFAULT_CONFIG
+from sp_tool.tool.sp_tool import SharepointTool, DEFAULT_CONFIG
 
-from .logging import initialize_logging, LOG
+from sp_tool.tool.logging import initialize_logging, LOG
 
 __created__ = "09-08-2021"
 __updated__ = "09-08-2021"

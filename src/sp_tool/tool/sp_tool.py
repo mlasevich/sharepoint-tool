@@ -10,7 +10,7 @@ import yaml
 
 from sp_tool.sharepoint import SharepointConnector
 from sp_tool.tool.file_lister import list_files
-from .logging import LOG
+from sp_tool.tool.logging import LOG
 
 DEFAULT_CONFIG = dict(
     dry_run=False,

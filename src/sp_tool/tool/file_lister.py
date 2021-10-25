@@ -3,7 +3,7 @@ import fnmatch
 import os
 from typing import List
 
-from .logging import LOG
+from sp_tool.tool.logging import LOG
 
 
 def _matches(file, glob):
